@@ -22,13 +22,14 @@ queries.getMovies = (callback) => {
     genero1,
     genero2,
     genero3,
-    promedio
+    promedio,
+    portada
     FROM peliculas;
     `
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -50,14 +51,15 @@ queries.getMovieById = (body, callback) => {
     genero1,
     genero2,
     genero3,
-    promedio
+    promedio,
+    portada
     FROM peliculas
     WHERE id = ${body.movie}
     `
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+            throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -77,7 +79,7 @@ queries.addMovie = (data, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+            throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -88,6 +90,25 @@ queries.addMovie = (data, callback) => {
     });
 
 };
+
+queries.validateMovie = (body, callback) => {
+    const query = `SELECT * FROM peliculas
+    WHERE titulo = "${body.titulo}"
+    `;
+
+    pool.getConnection((err, connection) => {
+        if (err)
+                throw err;
+        connection.query(query, (error, results) => {
+            connection.release();
+            if (error)
+                throw error;
+            if(results.length > 0) callback(true);
+            else callback(false);
+
+        });
+    });
+} 
 
 queries.updateMovie = (body, params, callback) => {
 
@@ -102,7 +123,7 @@ queries.updateMovie = (body, params, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -122,7 +143,7 @@ queries.deleteMovie = (params, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -135,7 +156,7 @@ queries.deleteMovie = (params, callback) => {
 };
 
 queries.addComment = (body, params, callback) => {
-    const query = `INSERT INTO comentarios SET 
+    const query = `UPDATE INTO calificaciones SET 
     idusuario = ${body.idusuario},
     idpelicula = ${params.movie},
     comentario = "${body.comentario}"
@@ -143,7 +164,7 @@ queries.addComment = (body, params, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -154,16 +175,17 @@ queries.addComment = (body, params, callback) => {
     });
 }
 
-queries.rate = (body, params, callback) => {
+queries.rateAndComment = (body, params, callback) => {
     const query = `INSERT INTO calificaciones SET 
     idusuario = ${body.idusuario},
     idpelicula = ${params.movie},
+    comentario = ${body.comentario}
     calificacion = "${body.rate}"
     `;
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -173,6 +195,32 @@ queries.rate = (body, params, callback) => {
     });
 }
 
+queries.getCommentByUser = (params, callback) => {
+    const query = `SELECT 
+    c.comentario AS comentario,
+    c.calificacion as calificacion,
+    p.id as idpelicula,
+    p.titulo AS pelicula,
+    u.nombre AS usuario
+    FROM calificaciones AS c 
+    INNER JOIN peliculas AS p ON c.idpelicula = p.id
+    INNER JOIN usuarios AS u ON c.idusuario = u.id
+    WHERE u.id = ${params.user}`;
+
+    pool.getConnection((err, connection) => {
+        if (err)
+                throw err;
+        connection.query(query, (error, result) => {
+            connection.release();
+            if (error)
+                throw error;
+            //console.log(result[0].idpelicula);
+            callback(result);
+        });
+    });
+}
+
+// In case it is needed
 queries.updateRate = (params, rate, callback) => {
     const query = `UPDATE peliculas
     SET promedio = ${rate}
@@ -180,7 +228,7 @@ queries.updateRate = (params, rate, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, result) => {
             connection.release();
             if (error)
@@ -208,7 +256,7 @@ const getRates = (callbackResponse, idmovie) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, results) => {
             connection.release();
             if (error)
@@ -237,7 +285,7 @@ const getLastRate = (callbackResponse, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw error;
+                throw err;
         connection.query(query, (error, result) => {
             connection.release();
             if (error)

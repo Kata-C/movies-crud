@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+.containerForm {
+    /* background-color: lawngreen; */
+    display:flex;
+    justify-content: center;
+    height: 500px;
+    font-family: 'Lato', sans-serif;
+}
+
+.formAlign {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    /* background-color: rgb(209, 100, 12); */
+    flex-wrap: wrap;
+}
+
+.form{
+    flex-direction: column;
+    justify-content: center;
+    width: fit-content;
+    /* background-color: rgb(49, 58, 184); */
+
+}
+
+.label {
+    margin-bottom: 20px;
+}
+
+.textbox {
+
+}

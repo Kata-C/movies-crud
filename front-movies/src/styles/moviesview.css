@@ -1,0 +1,9 @@
+
+.containerMovies {
+    /* background-color: lawngreen; */
+    margin: 30px;
+    /* flex-direction: row; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}

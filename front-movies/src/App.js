@@ -1,12 +1,19 @@
-import logo from './logo.svg';
+
 import './App.css';
 import React from 'react';
-import MoviesView from './views/movies/MoviesView';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Login from './views/Login';
 
 function App() {
   return (
     <div className="App">
-        <MoviesView></MoviesView>
+       <Router>
+          <Switch>
+            <Route  path='/' component={Layout} exact />
+            <Route  path='/login' component={Login} exact />
+          </Switch>
+      </Router>
     </div>
   );
 }

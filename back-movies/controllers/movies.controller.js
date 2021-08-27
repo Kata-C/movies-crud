@@ -1,4 +1,5 @@
 const moviesModel = require('../models/movies.model');
+const session = require('express-session');
 
 const getMovies = (req, res) => {
     moviesModel.getMovies((results, err) => {
@@ -35,7 +36,7 @@ const addMovies = (req, res) => {
             throw err;
         res.send({
             success: true,
-            result: results.message
+            results: results.message
         });
     });
 }
@@ -46,7 +47,7 @@ const updateMovie = (req, res) => {
             throw err;
         res.send({
             success: true,
-            result: results.message});
+            results: results.message});
     });
 }
 
@@ -59,7 +60,7 @@ const deleteMovie = (req, res) => {
 
         res.send({
             success: true,
-            result: results.message
+            results: results.message
         });
     });
 }
@@ -74,6 +75,20 @@ const addComment = (req, res) => {
         res.send({
             success: true,
             result: results.message
+        });
+    });
+}
+
+const getCommentsByUser = (req, res) => {
+    moviesModel.getCommentByUser(req.params, (results, err) => {
+        if(err){
+            console.json(err);
+            throw err;
+        }
+
+        res.send({
+            success: true,
+            result: results
         });
     });
 }
@@ -100,6 +115,21 @@ const rateAverage = (req, res) => {
     });
 }
 
+const validateMovie = (req, res) => {
+    moviesModel.validateMovie(req.body, (results, err) => {
+        if(err){
+            console.log(err);
+            throw err;
+        }
+        res.send({
+            results
+        });
+    });
+}
+
+
+
+// In case it is needed
 const updateRate = (req, res, rate ) => {
     moviesModel.updateRate(req.params, rate, (result, err) => {
         if(err){
@@ -121,5 +151,7 @@ module.exports = {
     getMovieById,
     addComment,
     rate,
-    rateAverage
+    rateAverage,
+    getCommentsByUser,
+    validateMovie
 }

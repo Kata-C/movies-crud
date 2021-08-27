@@ -23,21 +23,22 @@ DROP TABLE IF EXISTS `calificaciones`;
 CREATE TABLE `calificaciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `calificacion` tinyint(4) DEFAULT NULL,
-  `idusuario` int(11) DEFAULT NULL,
+  `comentario` text,
   `idpelicula` int(11) DEFAULT NULL,
+  `idusuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Data for the table `calificaciones` */
 
-insert  into `calificaciones`(`id`,`calificacion`,`idusuario`,`idpelicula`) values 
-(1,3,1,1),
-(2,2,2,1),
-(3,5,3,1),
-(4,4,4,1),
-(5,3,5,1),
-(6,3,5,1),
-(7,5,6,1);
+insert  into `calificaciones`(`id`,`calificacion`,`comentario`,`idpelicula`,`idusuario`) values 
+(1,3,NULL,1,1),
+(2,2,NULL,1,2),
+(3,5,NULL,1,3),
+(4,4,NULL,1,4),
+(5,3,NULL,1,5),
+(7,5,NULL,1,6),
+(8,4,'Excelente pelicula',15,6);
 
 /*Table structure for table `comentarios` */
 
@@ -49,12 +50,15 @@ CREATE TABLE `comentarios` (
   `idpelicula` int(11) DEFAULT NULL,
   `idusuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `comentarios` */
 
 insert  into `comentarios`(`id`,`comentario`,`idpelicula`,`idusuario`) values 
-(1,'Esta bien rara',1,1);
+(1,'Esta bien rara',1,1),
+(2,'Apta para toda la familia',15,2),
+(3,'No da miedo',1,2),
+(4,'El stop motion se ve increíble',5,1);
 
 /*Table structure for table `genero` */
 
@@ -104,21 +108,22 @@ CREATE TABLE `peliculas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` char(100) DEFAULT NULL,
   `descripcion` text,
-  `promedio` float DEFAULT NULL,
+  `promedio` float DEFAULT '0',
   `genero1` char(40) DEFAULT NULL,
   `genero2` char(40) DEFAULT NULL,
   `genero3` char(40) DEFAULT NULL,
+  `portada` char(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 /*Data for the table `peliculas` */
 
-insert  into `peliculas`(`id`,`titulo`,`descripcion`,`promedio`,`genero1`,`genero2`,`genero3`) values 
-(1,'Midsommar','Suspenso de una secta rara',3.57143,'Terror','Suspenso','Psicológico'),
-(5,'Coraline','Una niña que viaja a otro mundo dentro de su casa',NULL,NULL,NULL,NULL),
-(15,'El viaje de Chihiro','Película de anime sobre una niña que se perdió en otro mundo un poco más espiritual',NULL,'Anime','Drama',''),
-(16,'Avengers','Estan enojados y se quieren vengar',NULL,NULL,NULL,NULL),
-(17,'Kiki entrega a domicilio','Una brujita que se muda a otra ciudad',NULL,'Anime','Infantil','');
+insert  into `peliculas`(`id`,`titulo`,`descripcion`,`promedio`,`genero1`,`genero2`,`genero3`,`portada`) values 
+(1,'Midsommar','Suspenso de una secta rara',3.57143,'Terror','Suspenso','Psicológico','midsommar.jpg'),
+(5,'Coraline y la puerta secreta','Una niña que viaja a otro mundo dentro de su casa',0,'','','','coraline.jpg'),
+(15,'El viaje de Chihiro','Película de anime sobre una niña que se perdió en otro mundo un poco más espiritual',0,'Anime','Drama','','chihiro.jpg'),
+(17,'Kiki entregas a domicilio','Una brujita que se muda a otra ciudad',0,'Anime','Infantil','','kiki.jpg'),
+(34,'Tenet','Una persona debe de recuperar el control de la entropía para salvar al mundo',0,'Accion','Ciencia ficción','','tenet.jpg');
 
 /*Table structure for table `usuarios` */
 
@@ -127,10 +132,10 @@ DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` char(20) DEFAULT NULL,
-  `password` char(20) DEFAULT NULL,
-  `tipo` int(11) DEFAULT NULL,
+  `password` text,
+  `tipo` int(11) DEFAULT '2',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 /*Data for the table `usuarios` */
 
@@ -140,7 +145,9 @@ insert  into `usuarios`(`id`,`nombre`,`password`,`tipo`) values
 (3,'osuna','12345',2),
 (4,'guti','123',2),
 (5,'otro','4984',2),
-(6,'a','232',2);
+(6,'a','232',2),
+(7,'usuario1','$2b$10$0lufx0BNFI6pzhFIIXAEeuuNIwGspcs2p3I.Twf8fXppxaiw18mZK',2),
+(10,'usuario2','$2b$10$/v95Ykj8Zkz2/InPpTbPte4otwxfFcW/FyCWiD7AViak9luIyg826',2);
 
 /* Procedure structure for procedure `addMovie` */
 
