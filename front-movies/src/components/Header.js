@@ -1,12 +1,18 @@
 import React, {useState} from 'react';
 import { Link } from'react-router-dom';
 import '../styles/header.css';
+import {Button} from 'antd';
 
 
-const Header = ({isLogged}) => {
+const Header = ({isLogged, visible, setVisible}) => {
+
+    const showDrawer = () => {
+        setVisible(true);
+    };
+
 
     let menuWhenIsLogged = (<>
-        <div className="text">Comentarios</div>
+        <div className="text">Películas</div>
         <div className="text"><Link className="link" to="/login">Cerrar sesión</Link></div>
     </>);
 
@@ -17,9 +23,22 @@ const Header = ({isLogged}) => {
     return (
         <div className="header">
             <div className="menu">
-                <div className="text">Comentarios</div>
+                {/* <ul>
+                    <li className="text">
+                        <Link className="link" to="/movies/comments">Comentarios</Link>
+                    </li>
+                    <li className="text">
+                        <Button type="primary" onClick={showDrawer}>
+                            Iniciar sesión
+                        </Button>
+                    </li>
+                </ul> */}
+                
+                <div className="text"><Link className="link" to="/">Películas</Link></div>
                 {/* Complete here, signing out needs to manage sessions */}
-                <div className="text"><Link className="link" to="/login">Iniciar sesión</Link></div>
+                <Button type="primary" onClick={showDrawer}>
+                    Iniciar sesión
+                </Button>
             </div>
         </div>
     );

@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import '../styles/moviesview.css'
-import Movie from '../components/Movie';
 import { moviesService } from '../services/movies.service';
+import Movie from '../components/Movie';
+import Header from '../components/Header';
 
 
 const MoviesView = () => {
@@ -91,21 +92,21 @@ const MoviesView = () => {
 
     },[]);
     
-
-    console.log(movies);
     return (
-        <div className="containerMovies">
+        <>
+            <div className="containerMovies">
 
-            {
-                movies.length > 0 ?
-                movies.map((movie) => {return (
-                    <div>  
-                        <Movie data={movie} key={movie.id}/> 
-                    </div>
-                )}) 
-                : <p>No existen registros</p>
-            }
-        </div>
+                {
+                    movies.length > 0 ?
+                    movies.map((movie) => {return (
+                        <div>  
+                            <Movie data={movie} key={movie.id}/> 
+                        </div>
+                    )}) 
+                    : <p>No existen registros</p>
+                }
+            </div>
+        </>
         
     );
 

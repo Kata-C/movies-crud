@@ -17,7 +17,6 @@ const Login = () => {
     
     return (
     <div>
-        <Header isLogged={isLogged}/>
         <div className="containerForm">
             <Link to="/">Volver</Link>
             <div className="formAlign">

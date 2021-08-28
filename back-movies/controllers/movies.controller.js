@@ -74,7 +74,7 @@ const addComment = (req, res) => {
 
         res.send({
             success: true,
-            result: results.message
+            results: results.message
         });
     });
 }
@@ -88,21 +88,35 @@ const getCommentsByUser = (req, res) => {
 
         res.send({
             success: true,
-            result: results
+            results
         });
     });
 }
 
-const rate = (req, res) => {
-    moviesModel.rate(req.body, req.params, (results, err) => {
+const getCommentsByMovie = (req, res) => {
+    moviesModel.getCommentsByMovie(req.params, (results, err) => {
         if(err){
             console.json(err);
             throw err;
         }
 
-        rateAverage(req, res);
+        res.send({
+            success: true,
+            results
+        });
     });
 }
+
+// const rate = (req, res) => {
+//     moviesModel.rate(req.body, req.params, (results, err) => {
+//         if(err){
+//             console.json(err);
+//             throw err;
+//         }
+
+//         rateAverage(req, res);
+//     });
+// }
 
 const rateAverage = (req, res) => {
     moviesModel.getRatingAverage((rate, err) => {
@@ -115,21 +129,7 @@ const rateAverage = (req, res) => {
     });
 }
 
-const validateMovie = (req, res) => {
-    moviesModel.validateMovie(req.body, (results, err) => {
-        if(err){
-            console.log(err);
-            throw err;
-        }
-        res.send({
-            results
-        });
-    });
-}
 
-
-
-// In case it is needed
 const updateRate = (req, res, rate ) => {
     moviesModel.updateRate(req.params, rate, (result, err) => {
         if(err){
@@ -143,6 +143,38 @@ const updateRate = (req, res, rate ) => {
     });
 }
 
+
+const validateMovie = (req, res) => {
+    moviesModel.validateMovie(req.body, (results, err) => {
+        if(err){
+            console.log(err);
+            throw err;
+        }
+        res.send({
+            success: true,
+            results
+        });
+    });
+}
+
+const addRateAndComment = (req, res) => {
+    console.log(req.body);
+    console.log(req.body.idusuario);
+    console.log(req.body.comentario);
+    moviesModel.addRateAndComment(req.body, (results, err) => {
+        if(err){
+            console.log(err);
+            throw err;
+        }
+        res.send({
+            success: true,
+            results
+        });
+    });
+}
+ 
+
+
 module.exports = {
     getMovies,
     addMovies,
@@ -150,8 +182,9 @@ module.exports = {
     deleteMovie,
     getMovieById,
     addComment,
-    rate,
     rateAverage,
     getCommentsByUser,
-    validateMovie
+    validateMovie,
+    getCommentsByMovie,
+    addRateAndComment
 }

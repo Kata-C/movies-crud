@@ -1,6 +1,6 @@
 const pool = require('../database.config');
 const bcrypt = require('bcrypt');
-var session = require('express-session');
+const session = require('express-session');
 
 const queries = {};
 

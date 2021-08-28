@@ -16,7 +16,7 @@ queries.getMovies = (callback) => {
 
     const query =` 
     SELECT
-    id,
+    id as idpelicula,
     titulo,
     descripcion,
     genero1,
@@ -28,18 +28,41 @@ queries.getMovies = (callback) => {
     `
 
     pool.getConnection((err, connection) => {
-        if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-            callback(results);
-            
-        });
+        if (err) 
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(erorr);
+                callback(results);
+                
+            });
+        }
     });
 
+    // const query =` 
+    // SELECT
+    // id,
+    // titulo,
+    // descripcion,
+    // genero1,
+    // genero2,
+    // genero3,
+    // promedio,
+    // portada
+    // FROM peliculas;
+    // `
 
+    // pool.getConnection(async (err, connection) => {
+    //     if (err) 
+    //         console.error(err);
+    //     else {
+    //         const results = await connection.query(query);
+    //         console.log(results);
+    //         //callback(JSON.stringify(results));
+    //     }
+    // });
 };
 
 queries.getMovieById = (body, callback) => {
@@ -59,14 +82,15 @@ queries.getMovieById = (body, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-            throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-            callback(results);
-            
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                callback(results);
+            });
+        }
     });
 }
 
@@ -79,16 +103,17 @@ queries.addMovie = (data, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-            throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-    
-            callback(results);
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+        
+                callback(results);
+            });
+        }
     });
-
 };
 
 queries.validateMovie = (body, callback) => {
@@ -98,15 +123,17 @@ queries.validateMovie = (body, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-            if(results.length > 0) callback(true);
-            else callback(false);
-
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                if(results.length > 0) callback(true);
+                else callback(false);
+    
+            });
+        }
     });
 } 
 
@@ -123,16 +150,17 @@ queries.updateMovie = (body, params, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-    
-            callback(results);
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+        
+                callback(results);
+            });
+        }
     });
-
 };
 
 queries.deleteMovie = (params, callback) => {
@@ -143,55 +171,62 @@ queries.deleteMovie = (params, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-    
-            callback(results);
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+        
+                callback(results);
+            });
+        }
+
     });
 
 };
 
 queries.addComment = (body, params, callback) => {
-    const query = `UPDATE INTO calificaciones SET 
-    idusuario = ${body.idusuario},
-    idpelicula = ${params.movie},
-    comentario = "${body.comentario}"
+    const query = `UPDATE INTO calificaciones SET
+    comentario = "${body.comentario}
+    WHERE idusuario = ${body.idusuario} AND idpelicula = ${body.movie}"
     `;
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-    
-            callback(results);
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+        
+                callback(results);
+            });
+        }
     });
 }
 
-queries.rateAndComment = (body, params, callback) => {
+queries.addRateAndComment = (body, callback) => {
     const query = `INSERT INTO calificaciones SET 
     idusuario = ${body.idusuario},
-    idpelicula = ${params.movie},
-    comentario = ${body.comentario}
-    calificacion = "${body.rate}"
+    idpelicula = ${body.idpelicula},
+    comentario = "${body.comentario}",
+    calificacion = "${body.calificacion}"
     `;
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-            callback(results);
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                callback(results);
+            });
+        }
+ 
     });
 }
 
@@ -209,14 +244,43 @@ queries.getCommentByUser = (params, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, result) => {
-            connection.release();
-            if (error)
-                throw error;
-            //console.log(result[0].idpelicula);
-            callback(result);
-        });
+            console.error(err);
+        else {
+            connection.query(query, (error, result) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                //console.log(result[0].idpelicula);
+                callback(result);
+            });
+        }
+    });
+}
+
+queries.getCommentsByMovie = (params, callback) => {
+    const query = `SELECT 
+    c.comentario AS comentario,
+    c.calificacion as calificacion,
+    p.id as idpelicula,
+    p.titulo AS pelicula,
+    u.nombre AS usuario
+    FROM calificaciones AS c 
+    INNER JOIN peliculas AS p ON c.idpelicula = p.id
+    INNER JOIN usuarios AS u ON c.idusuario = u.id
+    WHERE p.id = ${params.movie}`;
+
+    pool.getConnection((err, connection) => {
+        if (err)
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                //console.log(result[0].idpelicula);
+                callback(results);
+            });
+        }
     });
 }
 
@@ -228,14 +292,17 @@ queries.updateRate = (params, rate, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, result) => {
-            connection.release();
-            if (error)
-                throw error;
-            //console.log(result[0].idpelicula);
-            callback(result);
-        });
+            console.log(err);
+        else { 
+            connection.query(query, (error, result) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                //console.log(result[0].idpelicula);
+                callback(result);
+            });
+        }
+        
     });
 }
 
@@ -256,13 +323,16 @@ const getRates = (callbackResponse, idmovie) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, results) => {
-            connection.release();
-            if (error)
-                throw error;
-            callbackResponse(calculateRatingAverage(results));
-        });
+            console.log(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                callbackResponse(calculateRatingAverage(results));
+            });
+        }
+        
     });
 
 }
@@ -285,14 +355,17 @@ const getLastRate = (callbackResponse, callback) => {
 
     pool.getConnection((err, connection) => {
         if (err)
-                throw err;
-        connection.query(query, (error, result) => {
-            connection.release();
-            if (error)
-                throw error;
-            //console.log(result[0].idpelicula);
-            callback(callbackResponse, result[0].idpelicula);
-        });
+            console.log(err)
+        else {
+            connection.query(query, (error, result) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                //console.log(result[0].idpelicula);
+                callback(callbackResponse, result[0].idpelicula);
+            });
+        }
+        
     });
 }
 

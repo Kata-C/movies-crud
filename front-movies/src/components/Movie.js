@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/movie.css'
 
 const Movie = ({data}) => {
@@ -12,28 +13,27 @@ const Movie = ({data}) => {
     if(data.genero3!==null || data.genero3!=='') genero3 = data.genero3
 
     let directory = "/images/"+ data.portada;
-    console.log(directory);
+    //console.log(directory);
 
     return (
         <div>
-        {/* <div className="container" onClick={() => {
-                        if(hover) setHover(false)
-                        else setHover(true);
-                    }} > */}
+        <Link
+        to= {{
+            pathname:'/movies/comments',
+            data
+        }}
+        >   
             <div className="container" >
+              
                 <img src={directory} alt={data.titulo}/>
-               
                 <div style={{padding:'8px'}}>
                     <div className="title">{data.titulo}</div>
                     <div className="rate">{data.promedio.toFixed(1)}</div>
-                {/* <div className="text">Descripción: {data.descripcion}</div>
-                <div className="text">Género: {genero1}</div>
-                <div className="text">{genero2}</div>
-                <div className="text">{genero3}</div> */}
                 </div>
                 
-                
+            
             </div>
+        </Link> 
         </div>
     )
 }
