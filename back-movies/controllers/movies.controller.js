@@ -1,6 +1,8 @@
 const moviesModel = require('../models/movies.model');
 const session = require('express-session');
 
+
+
 const getMovies = (req, res) => {
     moviesModel.getMovies((results, err) => {
         if(err){
@@ -30,7 +32,8 @@ const getMovieById = (req, res) => {
 
 
 const addMovies = (req, res) => {
-
+    console.log(req.body);
+    res.send({ success: true});
     moviesModel.addMovie(req.body, (results, err) => {
         if(err)
             throw err;
@@ -73,7 +76,7 @@ const addComment = (req, res) => {
         }
 
         res.send({
-            success: true,
+            success: results.success,
             results: results.message
         });
     });
@@ -158,9 +161,7 @@ const validateMovie = (req, res) => {
 }
 
 const addRateAndComment = (req, res) => {
-    console.log(req.body);
-    console.log(req.body.idusuario);
-    console.log(req.body.comentario);
+
     moviesModel.addRateAndComment(req.body, (results, err) => {
         if(err){
             console.log(err);

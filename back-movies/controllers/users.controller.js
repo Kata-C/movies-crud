@@ -6,7 +6,7 @@ const addUser = (req, res) => {
         if(err)
             throw err;
         res.send({
-            success: true,
+            success: results.success,
             results: results.message
         });
     });
@@ -15,7 +15,6 @@ const addUser = (req, res) => {
 const getUserById = (req, res) => {
     usersModel.getUserById(req.params, (results, err) => {
         if(err){
-            console.log(err);
             throw err;
         }
         res.send({
@@ -30,12 +29,14 @@ const login = (req, res) => {
     usersModel.login(req, (results, err) => {
         if(err)
             throw err;
-        if(results.loggedin) {
+
             res.send({
-                loggedin: results.loggedin,
-                user: results.user
+                admin: results.admin,
+                usuario: results.usuario,
+                success: results.success,
+                idusuario: results.idusuario,
+                token: results.token
             });
-        }
         
     });
 }

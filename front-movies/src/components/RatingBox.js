@@ -1,27 +1,38 @@
 import React from 'react';
-import {InputNumber, Form, Input, Button} from 'antd';
+import {InputNumber, Form, Input, Button, message} from 'antd';
 import '../styles/ratingbox.css';
 import { moviesService } from '../services/movies.service';
 
 const RatingBox = ({movie, setUpdateList}) => {
 
+    const success = (text) => {
+        message.success(text);
+    };
+    const error = (text) => {
+        message.error(text);
+    };
+
     const submitRate = async(values) => {
+        console.log(window.localStorage.getItem('token'));
         let data = {
-            idusuario: 6,
-            idpelicula: movie,
-            calificacion: values.rate,
-            comentario: values.comentario
+            idusuario: window.localStorage.getItem('idusuario') != null ? window.localStorage.getItem('idusuario') : '', 
+            idpelicula: movie ? movie : '',
+            calificacion: values.rate ? values.rate : '',
+            comentario: values.comentario ? values.comentario : ''
         };
         const responseSaving = await moviesService.addRateAndComment(data);
         if(responseSaving.data.success) {
             const responseUpdating = await moviesService.calculateAverage(movie);
+            console.log(responseUpdating.data);
             if(responseUpdating.data.success) {
-                console.log('Se guardó correctamente');
                 setUpdateList(true);
+                success('Se guardó correctamente');
                 // Change here, replace for a message
-            } else console.log('No se pudo actualizar la calificación');
-        } else console.log('No se pudo guardar la calificación');
+            } else error('No se pudo actualizar la calificación');
+        } else error('Inicie sesión para calificar este título o para hacer un comentario');
     }
+
+  
 
     const {TextArea} = Input;
     return (<div className='form-rating'>

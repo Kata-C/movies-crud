@@ -1,6 +1,7 @@
 const pool = require('../database.config');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
+const jwt = require('jsonwebtoken');
 
 const queries = {};
 
@@ -22,7 +23,11 @@ queries.addUser = (data, callback) => {
                 if (error)
                     throw error;
 
-                callback(results);
+                let data = {
+                    success: true,
+                    message: 'Se ha registrado con éxito'
+                }
+                callback(data);
             });
         });
     })
@@ -44,43 +49,58 @@ queries.getUserById = (data, callback) => {
             connection.release();
             if (error)
                 throw error;
+            let data = {
+                success: true,
+                results
+            }
 
-            callback(results);
+            callback(data);
         });
     });
 
 }
 
 queries.login = (req, callbackResponse) => {
-    
-    getHashPassword(req, callbackResponse, (req, result, callbackResponse) => {
-        console.log(result);
-        console.log(req.body.password);
-        comparePassword(req, result, callbackResponse, (err, isPasswordMatch, callbackResponse, req) => {
+    getHashPassword(req, callbackResponse, (req, results, callbackResponse) => {
+        comparePassword(req, results[0].password, callbackResponse, (err, isPasswordMatch, callbackResponse, req) => {
+            if(err) callbackResponse({success: false})
             if(isPasswordMatch) {
-                req.session.loggedin = true;
-				req.session.username = req.body.name;
-				// response.redirect('/home');
+                // if(results[0].tipo == 1) req.session.admin = true
+                // else req.session.admin = false
+				// req.session.usuario = req.body.nombre;
+                // console.log(`Desde el modelo: ${req.session.usuario}`)
+                // req.session.idusuario = results.idusuario;
+                console.log(`id usuario desde bd: ${results[0].idusuario}`)
+                let token = jwt.sign({
+                    admin: results[0].tipo == 1 ? true : false,
+                    usuario: req.body.nombre,
+                    idusuario: results[0].idusuario
+                }, 'secret', {expiresIn: 60 * 60});
+				//response.redirect('/home');    
                 callbackResponse({
-                    loggedin: req.session.loggedin,
-                    user: req.session.username
+                    admin: results[0].tipo == 1 ? true : false,
+                    usuario: req.body.nombre,
+                    idusuario: results[0].idusuario,
+                    success: true,
+                    token
                 });
             } else callbackResponse({
-                loggedin: false,
-                user: ''
+                admin: '',
+                usuario: '',
+                succes: false
             });
         });
     });
-
 };
 
 const getHashPassword= (req, callbackResponse, callback) => {
     
     const query = `SELECT 
-        id,
-        password
+        id as idusuario,
+        password,
+        tipo
         FROM  usuarios 
-        WHERE nombre = "${req.body.name}"`;
+        WHERE nombre = "${req.body.nombre}"`;
 
     pool.getConnection((err, connection) => {
         if (err)
@@ -89,13 +109,10 @@ const getHashPassword= (req, callbackResponse, callback) => {
             connection.release();
             if (error)
                 throw error;
-            callback(req, results[0].password, callbackResponse);
+            callback(req, results, callbackResponse);
         });
     });
 }
-
-
-
 
 const cryptPassword = (password, callback) => {
     bcrypt.genSalt(10, function(err, salt) {
@@ -115,5 +132,6 @@ const comparePassword = (req, hashword, callbackResponse, callback) => {
             callback(err, null, callbackResponse);
     });
  };
+
 
 module.exports = queries;

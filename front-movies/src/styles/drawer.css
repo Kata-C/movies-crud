@@ -1,0 +1,9 @@
+.buttons {
+    display:flex
+}
+
+.button-signup {
+    width: fit-content;   
+    padding: 0px;
+    margin-left: 5px;
+}

@@ -65,10 +65,10 @@ queries.getMovies = (callback) => {
     // });
 };
 
-queries.getMovieById = (body, callback) => {
+queries.getMovieById = (params, callback) => {
     const query =` 
     SELECT
-    id,
+    id as idpelicula,
     titulo,
     descripcion,
     genero1,
@@ -77,7 +77,7 @@ queries.getMovieById = (body, callback) => {
     promedio,
     portada
     FROM peliculas
-    WHERE id = ${body.movie}
+    WHERE id = ${params.movie}
     `
 
     pool.getConnection((err, connection) => {
@@ -98,8 +98,8 @@ queries.getMovieById = (body, callback) => {
 queries.addMovie = (data, callback) => {
 
     const query = `INSERT INTO peliculas 
-    (titulo, descripcion, genero1, genero2, genero3) 
-    VALUES ("${data.titulo}", "${data.descripcion}", "${data.genero1}","${data.genero2}","${data.genero3}")`;
+    (titulo, descripcion, genero1, genero2, genero3, portada) 
+    VALUES ("${data.titulo}", "${data.descripcion}", "${data.genero1}","${data.genero2}","${data.genero3}", "${data.portada}")`;
 
     pool.getConnection((err, connection) => {
         if (err)
@@ -144,7 +144,8 @@ queries.updateMovie = (body, params, callback) => {
     descripcion = "${body.descripcion}",
     genero1 = "${body.genero1}",
     genero2 = "${body.genero2}",
-    genero3 = "${body.genero3}"
+    genero3 = "${body.genero3}",
+    portada = "${body.portada}"
     WHERE id = ${params.movie}
     `;
 
@@ -187,9 +188,9 @@ queries.deleteMovie = (params, callback) => {
 };
 
 queries.addComment = (body, params, callback) => {
-    const query = `UPDATE INTO calificaciones SET
-    comentario = "${body.comentario}
-    WHERE idusuario = ${body.idusuario} AND idpelicula = ${body.movie}"
+    const query = `UPDATE calificaciones SET
+    comentario = "${body.comentario}"
+    WHERE idusuario = ${body.idusuario} AND idpelicula = ${params.movie}
     `;
 
     pool.getConnection((err, connection) => {
@@ -198,10 +199,18 @@ queries.addComment = (body, params, callback) => {
         else {
             connection.query(query, (error, results) => {
                 connection.release();
-                if (error)
+                if (error) {
                     console.error(error);
-        
-                callback(results);
+                    let response={
+                        success: false,
+                        message: error
+                    };
+                }
+                let response={
+                    success: true,
+                    message: results.message
+                };
+                callback(response);
             });
         }
     });
@@ -284,7 +293,6 @@ queries.getCommentsByMovie = (params, callback) => {
     });
 }
 
-// In case it is needed
 queries.updateRate = (params, rate, callback) => {
     const query = `UPDATE peliculas
     SET promedio = ${rate}

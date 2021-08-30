@@ -4,15 +4,7 @@ const getAllMovies = () => {
     return new Promise(async (resolve, reject) => {
 
         try {
-            const response = await api.get(`/movies/`
-        //     , {
-        //     params: {
-        //     },
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
-          );
+            const response = await api.get(`/movies/`);
     
              resolve(response);
         } catch (error) {
@@ -32,11 +24,11 @@ const getMovieById = (movieid) => {
       }); 
 }
 
-const updateMovie = (movieid, data) => {
+const updateMovie = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await api.put(`/movies/update/${movieid}`, data,
-            { headers: { 'content-type': 'application/x-www-form-urlencoded' }});
+            const response = await api.put(`/movies/update/${data.idpelicula}`, data,
+            { headers: { 'content-type': 'application/json' }});
             resolve(response);
         } catch (error) {
             reject(error);
@@ -48,13 +40,25 @@ const addMovie = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await api.post(`/movies/`, data,
-            { headers: { 'content-type': 'application/x-www-form-urlencoded' }});
+            { headers: { 'content-type': 'application/json' }});
             resolve(response);
         } catch (error) {
             reject(error);
         }
       }); 
 }
+
+// const addMovie = (data) => {
+//     console.log(data.portada);
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             const response = await api.post(`/upload`, data.portada);
+//             resolve(response);
+//         } catch (error) {
+//             reject(error);
+//         }
+//       }); 
+// }
 
 const deleteMovie = (movieid) => {
     return new Promise(async (resolve, reject) => {
@@ -84,11 +88,15 @@ const getCommentsByMovie = (movieid) => {
  * @returns - Promise that consumes the endpoint to save a rating and a comment about a certain movie
  */
 const addRateAndComment = (data) => {
+    let headers = {
+        'content-type': 'application/json',
+        'authorization': window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null
+    }
+    console.log(headers.authorization);
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data);
             const response = await api.post(`/movies/rate/`, data,
-            { headers: { 'content-type': 'application/x-www-form-urlencoded' }});
+            { headers});
             resolve(response);
         } catch (error) {
             reject(error);
@@ -102,10 +110,11 @@ const addRateAndComment = (data) => {
  * @returns - Promise that consumes the endpoint to calculate the rate average and update this average in database
  */
 const calculateAverage = (idmovie) => {
+
     return new Promise(async (resolve, reject) => {
         try {
             const response = await api.put(`/movies/rate/${idmovie}`,
-            { headers: { 'content-type': 'application/x-www-form-urlencoded' }});
+            { headers: { 'content-type': 'application/json'}});
             resolve(response);
         } catch (error) {
             reject(error);

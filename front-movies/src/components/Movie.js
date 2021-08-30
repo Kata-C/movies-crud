@@ -3,25 +3,17 @@ import { Link } from 'react-router-dom';
 import '../styles/movie.css'
 
 const Movie = ({data}) => {
-
-    // const [hover, setHover] = useState(false);
-   
     let genero1, genero2, genero3 = '';
-
     if(data.genero1!==null || data.genero1!=='') genero1 = data.genero1
     if(data.genero2!==null || data.genero2!=='') genero2 = data.genero2
     if(data.genero3!==null || data.genero3!=='') genero3 = data.genero3
 
     let directory = "/images/"+ data.portada;
-    //console.log(directory);
 
     return (
         <div>
         <Link
-        to= {{
-            pathname:'/movies/comments',
-            data
-        }}
+        to= {`/movies/${data.idpelicula}/comments`}
         >   
             <div className="container" >
               

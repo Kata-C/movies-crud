@@ -1,13 +1,16 @@
 import './App.css';
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Login from './views/Login';
+import React,{useState} from 'react';
+import AuthContext from './auth.context';
+import Layout from './views/Layout';
 
 function App() {
+  const [admin, setAdmin] = useState(false);
+  const [user, setUser] = useState('');
   return (
     <div className="App">
-        <Layout />
+       <AuthContext.Provider  value={{ admin: admin, usuario: user, setAdmin: setAdmin, setUser: setUser}}>  
+          <Layout />
+        </AuthContext.Provider>
     </div>
   );
 }

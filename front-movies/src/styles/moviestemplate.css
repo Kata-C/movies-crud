@@ -103,3 +103,20 @@
     position: inherit;
 }
 
+.ratingbox {
+    position: inherit;
+    z-index: 1;
+}
+
+.button {
+    width: fit-content;
+    padding: 2px;
+    margin-right: 5px;
+}
+
+.button-section {
+    display:flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
