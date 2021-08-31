@@ -27,78 +27,14 @@ CREATE TABLE `calificaciones` (
   `idpelicula` int(11) DEFAULT NULL,
   `idusuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `calificaciones` */
 
 insert  into `calificaciones`(`id`,`calificacion`,`comentario`,`idpelicula`,`idusuario`) values 
-(1,3,NULL,1,1),
-(2,2,NULL,1,2),
-(3,5,NULL,1,3),
-(4,4,NULL,1,4),
-(5,3,NULL,1,5),
-(7,5,NULL,1,6),
-(8,4,'Excelente pelicula',15,6);
-
-/*Table structure for table `comentarios` */
-
-DROP TABLE IF EXISTS `comentarios`;
-
-CREATE TABLE `comentarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `comentario` text NOT NULL,
-  `idpelicula` int(11) DEFAULT NULL,
-  `idusuario` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
-/*Data for the table `comentarios` */
-
-insert  into `comentarios`(`id`,`comentario`,`idpelicula`,`idusuario`) values 
-(1,'Esta bien rara',1,1),
-(2,'Apta para toda la familia',15,2),
-(3,'No da miedo',1,2),
-(4,'El stop motion se ve increíble',5,1);
-
-/*Table structure for table `genero` */
-
-DROP TABLE IF EXISTS `genero`;
-
-CREATE TABLE `genero` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` char(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
-
-/*Data for the table `genero` */
-
-insert  into `genero`(`id`,`nombre`) values 
-(1,'terror'),
-(2,'drama'),
-(3,'infantil'),
-(4,'comedia'),
-(5,'acción'),
-(6,'suspenso');
-
-/*Table structure for table `genero_pelicula` */
-
-DROP TABLE IF EXISTS `genero_pelicula`;
-
-CREATE TABLE `genero_pelicula` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idpelicula` int(11) DEFAULT NULL,
-  `idgenero` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
-
-/*Data for the table `genero_pelicula` */
-
-insert  into `genero_pelicula`(`id`,`idpelicula`,`idgenero`) values 
-(1,1,1),
-(2,1,6),
-(3,5,1),
-(4,5,3),
-(16,16,5);
+(1,3,'Me gustó, pero está sobrevalorada',1,3),
+(2,4,'Me pareció muy entretenida',1,2),
+(3,3,'Está bien, pero esperaba más. Creí que era de terror y esperaba una trama con mejor fundamento',1,4);
 
 /*Table structure for table `peliculas` */
 
@@ -114,16 +50,21 @@ CREATE TABLE `peliculas` (
   `genero3` char(40) DEFAULT NULL,
   `portada` char(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `peliculas` */
 
 insert  into `peliculas`(`id`,`titulo`,`descripcion`,`promedio`,`genero1`,`genero2`,`genero3`,`portada`) values 
-(1,'Midsommar','Suspenso de una secta rara',3.57143,'Terror','Suspenso','Psicológico','midsommar.jpg'),
-(5,'Coraline y la puerta secreta','Una niña que viaja a otro mundo dentro de su casa',0,'','','','coraline.jpg'),
-(15,'El viaje de Chihiro','Película de anime sobre una niña que se perdió en otro mundo un poco más espiritual',0,'Anime','Drama','','chihiro.jpg'),
-(17,'Kiki entregas a domicilio','Una brujita que se muda a otra ciudad',0,'Anime','Infantil','','kiki.jpg'),
-(34,'Tenet','Una persona debe de recuperar el control de la entropía para salvar al mundo',0,'Accion','Ciencia ficción','','tenet.jpg');
+(1,'Midsommar','Una pareja estadounidense que no está pasando por su mejor momento acude con unos amigos al Midsommar, un festival de verano que se celebra cada 90 años en una aldea remota de Suecia. Lo que comienza como unas vacaciones de ensueño en un lugar en el que el sol no se pone nunca, poco a poco se convierte en una oscura pesadilla cuando los misteriosos aldeanos les invitan a participar en sus perturbadoras actividades festivas',3.33333,'Terror','Drama','Thriller','midsommar.jpg'),
+(2,'Coraline y la puerta secreta','Basada en una novela de Neil Gaiman, narra la historia de una niña que, al atravesar una pared de su casa, encuentra una versión mejorada de su vida: sus padres son más considerados con ella, pero la las sensaciones maravillosas darán paso al miedo y a la angustia',0,'Animación','Fantasía','','coraline.jpg'),
+(3,'Spiderman: Far from home','Peter Parker decide irse junto a MJ, Ned y el resto de sus amigos a pasar unas vacaciones a Europa. Sin embargo, el plan de Parker por dejar de lado sus superpoderes durante unas semanas se ven truncados cuando Nick Fury contacta con él para solicitarle ayuda para frenar el ataque de unas criaturas elementales que están causando el caos en el continente. En ese momento, Parker vuelve a ponerse el traje de Spider-Man para cumplir con su labor',0,'Acción','Superhéroes','Fantasía','spiderman.png'),
+(4,'El viaje de Chihiro','Chihiro es una niña de diez años que viaja en coche con sus padres. Después de atravesar un túnel, llegan a un mundo fantástico, en el que no hay lugar para los seres humanos, sólo para los dioses de primera y segunda clase. Cuando descubre que sus padres han sido convertidos en cerdos, Chihiro se siente muy sola y asustada',0,'Animación','Fantasía','Aventuras','chihiro.jpg'),
+(5,'Avengers: Endgame','Después de los eventos devastadores de \'Avengers: Infinity War\', el universo está en ruinas debido a las acciones de Thanos, el Titán Loco. Con la ayuda de los aliados que quedaron, los Vengadores deberán reunirse una vez más para intentar deshacer sus acciones y restaurar el orden en el universo de una vez por todas, sin importar cuáles son las consecuencias',0,'Acción','Superhéroes','Fantasía','endgame.jpg'),
+(6,'Kiki: Entregas a domicilio','Kiki es una joven bruja de 13 años, en periodo de entrenamiento, que se divierte volando en su escoba junto a Jiji, un sabio gato negro. Según la tradición, todas las brujas de esa edad deben abandonar su hogar durante un año para saber valerse por sí mismas. Así, ella descubrirá lo que significa la responsabilidad, la independencia y la amistad. En su camino Kiki y Jiji harán un nuevo amigo, Tombo, con el que vivirán extraordinarias aventuras',0,'Animación','Aventuras','','kiki.jpg'),
+(7,'El Faro','Una remota y misteriosa isla de Nueva Inglaterra en la década de 1890. El veterano farero Thomas Wake (Willem Dafoe) y su joven ayudante Ephraim Winslow (Robert Pattinson) deberán convivir durante cuatro semanas. Su objetivo será mantener el faro en buenas condiciones hasta que llegue el relevo que les permita volver a tierra. Pero las cosas se complicarán cuando surjan conflictos por jerarquías de poder entre ambos',0,'Drama','Fantasía','Terror','elfaro.jpg'),
+(8,'Tenet','Armado con tan solo una palabra –Tenet– el protagonista de esta historia deberá pelear por la supervivencia del mundo entero en una misión que le lleva a viajar a través del oscuro mundo del espionaje internacional, y cuya experiencia se desdoblará más allá del tiempo lineal',0,'Acción','Ciencia ficción','','tenet.jpg'),
+(9,'El laberinto del fauno','Año 1944, posguerra española. Ofelia (Ivana Baquero) y su madre, Carmen (Ariadna Gil), que está embarazada, se trasladan a un pequeño pueblo al que ha sido destinado el nuevo marido de Carmen, Vidal (Sergi López), un cruel capitán del ejército franquista por el que la niña no siente ningún afecto. La misión de Vidal es acabar con los últimos miembros de la resistencia republicana que permanecen escondidos en los montes de la zona. En la zona viven Mercedes (Maribel Verdú), el ama de llaves, y el médico (Álex Angulo) que se hace cargo del delicado estado de salud de Carmen. Una noche, Ofelia descubre las ruinas de un laberinto, y allí se encuentra con un fauno (Doug Jones), una extraña criatura que le hace una sorprendente revelación: ella es en realidad una princesa, la última de su estirpe, y los suyos la esperan desde hace mucho tiempo. Para poder regresar a su mágico reino, la niña deberá enfrentarse a tres pruebas',0,'Fantasía','Drama','Thriller','el_laberinto_del_fauno.jpg'),
+(10,'Prueba','Prueba',0,'Prueba','','','avengers.jpg');
 
 /*Table structure for table `usuarios` */
 
@@ -135,19 +76,15 @@ CREATE TABLE `usuarios` (
   `password` text,
   `tipo` int(11) DEFAULT '2',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `usuarios` */
 
 insert  into `usuarios`(`id`,`nombre`,`password`,`tipo`) values 
-(1,'cristal','123',2),
-(2,'admin','123',1),
-(3,'osuna','12345',2),
-(4,'guti','123',2),
-(5,'otro','4984',2),
-(6,'a','232',2),
-(7,'usuario1','$2b$10$0lufx0BNFI6pzhFIIXAEeuuNIwGspcs2p3I.Twf8fXppxaiw18mZK',2),
-(10,'usuario2','$2b$10$/v95Ykj8Zkz2/InPpTbPte4otwxfFcW/FyCWiD7AViak9luIyg826',2);
+(1,'admin','$2b$10$x9Y9gIUnbtSCsKfxwfAsZuj/QT6SaEDHzXuhKSrFwlnjHPF6fmTYW',1),
+(2,'Usuario','$2b$10$YR0JhFBc2y5068vu43hVPO6lJgjL7OPIex0L4mF0uZQGT6K.ePzWm',2),
+(3,'Usuario2','$2b$10$3pAs/Ax0x6dG2UfDiPKQael0w/q4yQZtIhwx.vRornh2xqx5oEXyC',2),
+(4,'Usuario3','$2b$10$bz5.PUERpQJs14mZkmLO7ewjzKIOkMX4Sh6k3VHsR051C16Ppauai',2);
 
 /* Procedure structure for procedure `addMovie` */
 

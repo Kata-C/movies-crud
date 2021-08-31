@@ -12,10 +12,7 @@ const Layout = () => {
 
     const [visible, setVisible] = useState(false);
     const [visibleAdding, setVisibleAdding] = useState(false);
-
-    // useEffect(() => {
-    //     window.localStorage.clear();
-    // }, []);
+    const [updateList, setUpdateList] = useState(false);
 
     const onClose = () => {
         setVisible(false);

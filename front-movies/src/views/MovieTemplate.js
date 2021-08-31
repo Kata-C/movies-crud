@@ -14,6 +14,7 @@ const MovieTemplate = () => {
     const [visibleModal, setVisibleModal] = useState(false);
     const [visibleDrawer, setVisibleDrawer] = useState(false);
     const [movie, setMovie] = useState({});
+    const [img, setImg] = useState('');
 
     let { id } = useParams();
    
@@ -21,6 +22,7 @@ const MovieTemplate = () => {
     useEffect(() => {
         getMovieById();
         getCommentsForAMovie();
+        //let img = movie.length > 0? arrayBufferToBase64(movie.image.data) : '';
     }, [updateList]);
 
     const success = () => {
@@ -54,7 +56,8 @@ const MovieTemplate = () => {
         bytes.forEach((b) => binary += String.fromCharCode(b));
         return   `data:image/jpeg;base64,${window.btoa(binary)}`;
     };
-    let img = movie.image != null ? arrayBufferToBase64(movie.image.data) : '';
+
+    
   
 
     const showButtons = () => {
@@ -71,7 +74,7 @@ const MovieTemplate = () => {
 
     const deleteMovie = async () => {
         const response = await moviesService.deleteMovie(id);
-        if(response.data.success) {
+        if(response.data.results.success) {
             setTimeout(() => {
                 window.location = '/';
             }, 200)    
@@ -83,13 +86,17 @@ const MovieTemplate = () => {
 
     const getCommentsForAMovie = async () => {
         const results = await moviesService.getCommentsByMovie(id);
-        setComments(results.data.results);
+        setComments(results.data.results.results);
         setUpdateList(false);
     }
 
     const getMovieById = async () => {
         const results = await moviesService.getMovieById(id);
-        if(results.data.success) setMovie(results.data.results[0]);
+        if(results.data.success) { 
+            setMovie(results.data.results[0]);
+            if(results.data.results.length > 0) 
+                setImg(arrayBufferToBase64(results.data.results[0].image.data))
+        }
         else error();
     }
 

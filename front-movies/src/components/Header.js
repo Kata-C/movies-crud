@@ -18,17 +18,13 @@ const Header = ({setVisible, setVisibleAdding}) => {
     }
 
     const logout = async () => {
-        const response = await userService.logout();
-        if(response.data.success) {
-            auth.setUser('');
-            auth.setAdmin(false);
-            //window.localStorage.removeItem('auth');
-            window.localStorage.removeItem('usuario');
-            window.localStorage.removeItem('admin');
-            window.localStorage.removeItem('idusuario');
-            window.localStorage.removeItem('token');
-            window.location = '/';
-        }
+        auth.setUser('');
+        auth.setAdmin(false);
+        window.localStorage.removeItem('usuario');
+        window.localStorage.removeItem('admin');
+        window.localStorage.removeItem('idusuario');
+        window.localStorage.removeItem('token');
+        window.location = '/';
     }
 
  
@@ -43,7 +39,7 @@ const Header = ({setVisible, setVisibleAdding}) => {
             console.log('localstorage' + window.localStorage.getItem('admin'))
             return (
                 <div className="menu">
-                    <div className="text"><Link className="link" to="/">Películas</Link></div>
+                    <Button type='link' className="text"><Link className="link" to="/">Películas</Link></Button>
                     <Button type="primary" onClick={showDrawer}>
                         Iniciar sesión
                     </Button>
@@ -53,19 +49,19 @@ const Header = ({setVisible, setVisibleAdding}) => {
             if(window.localStorage.getItem('admin') == 1 ) {
                 return (
                 <div className="menu">
-                    <div className="text" onClick={showDrawerAdd}>Agregar peliculas</div>
-                    <div className="text"><Link className="link" to="/" >Películas</Link></div>
-                    <div className="text"><Popover trigger='hover' content={contentPopOver}>
+                    <Button type='link' className="text" onClick={showDrawerAdd}>Agregar peliculas</Button>
+                    <Button type='link' className="text"><Link className="link" to="/" >Películas</Link></Button>
+                    <Button type='link' className="text"><Popover trigger='hover' content={contentPopOver}>
                         Administrador
-                    </Popover></div>  
+                    </Popover></Button>  
                 </div>);
             } else if(window.localStorage.getItem('usuario') != '') {
                 return (
                 <div className="menu">
-                    <div className="text"><Link className="link" to="/">Películas</Link></div>
-                    <div className="text"><Popover trigger='hover' content={contentPopOver}>
+                    <Button type='link'className="text"><Link className="link" to="/">Películas</Link></Button>
+                    <Button type='link'className="text"><Popover trigger='hover' content={contentPopOver}>
                         {window.localStorage.getItem('usuario')}
-                    </Popover></div>  
+                    </Popover></Button>  
                 </div>);
             } 
         }

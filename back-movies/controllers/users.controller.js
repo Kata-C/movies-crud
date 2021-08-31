@@ -18,7 +18,6 @@ const getUserById = (req, res) => {
             throw err;
         }
         res.send({
-            success: true,
             results
         });
     });
@@ -28,7 +27,13 @@ const login = (req, res) => {
 
     usersModel.login(req, (results, err) => {
         if(err)
-            throw err;
+            res.send({
+                admin: null,
+                usuario: null,
+                success: false,
+                idusuario: null,
+                token: null
+            });
 
             res.send({
                 admin: results.admin,
@@ -41,8 +46,21 @@ const login = (req, res) => {
     });
 }
 
+const validateUser = (req, res) => {
+    usersModel.validateUser(req.body, (results, err) => {
+        if(err){
+            console.log(err);
+            throw err;
+        }
+        res.send({
+            results
+        });
+    });
+}
+
 module.exports = {
     addUser,
     getUserById,
-    login
+    login,
+    validateUser
 }

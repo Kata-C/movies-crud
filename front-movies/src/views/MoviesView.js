@@ -31,9 +31,7 @@ const MoviesView = () => {
                 {
                     movies.length > 0 ?
                     movies.map((movie) => {return (
-                        <div>  
-                            <Movie data={movie} key={movie.id}/> 
-                        </div>
+                        <Movie data={movie} key={movie.id}/> 
                     )}) 
                     : <p>No existen registros</p>
                 }

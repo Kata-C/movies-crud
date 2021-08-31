@@ -13,8 +13,8 @@ const RatingBox = ({movie, setUpdateList}) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        getRateByUser();
-    }, [userRated])
+        getRateByUser();;
+    }, [rate])
 
     const success = (text) => {
         message.success(text);
@@ -25,9 +25,9 @@ const RatingBox = ({movie, setUpdateList}) => {
 
     const getRateByUser = async () => {
         const response = await moviesService.getRateByUser(movie, window.localStorage.getItem('idusuario'));
-        if(response.data.success) {
-            if(response.data.results) {
-                if(response.data.results.length > 0) setUserRated(true);
+        if(response.data.results.success) {
+            if(response.data.results.results) {
+                if(response.data.results.results.length > 0) setUserRated(true);
                 else setUserRated(false);
             }
         } 
@@ -35,21 +35,20 @@ const RatingBox = ({movie, setUpdateList}) => {
 
 
     const submitRate = async(values) => {
-        let data = {
-            idusuario: window.localStorage.getItem('idusuario') != null ? window.localStorage.getItem('idusuario') : '', 
-            idpelicula: movie ? movie : '',
-            calificacion: rate > 0 ? rate : 0,
-            comentario: values.comentario ? values.comentario : ''
-        };
-        
         if(window.localStorage.getItem('token')) {
+            //getRateByUser();
             if(rate > 0) {
-                if(userRated === false){
+                let data = {
+                    idusuario: window.localStorage.getItem('idusuario') != null ? window.localStorage.getItem('idusuario') : '', 
+                    idpelicula: movie ? movie : '',
+                    calificacion: rate > 0 ? rate : 0,
+                    comentario: values.comentario ? values.comentario : '',
+                    newrate: userRated === false ? true : false
+                };
                 const responseSaving = await moviesService.addRateAndComment(data);
-                if(responseSaving.data.success) {
-                    const responseUpdating = await moviesService.calculateAverage(movie);
-                    console.log(responseUpdating.data);
-                    if(responseUpdating.data.success) {
+                if(responseSaving.data.results.success) {
+                    const responseUpdating = await moviesService.calculateAverage(movie, {calificacion: data.calificacion});
+                    if(responseUpdating.data.results.success) {    
                         setUpdateList(true);
                         form.setFieldsValue(
                             {comentario : ''}
@@ -57,12 +56,9 @@ const RatingBox = ({movie, setUpdateList}) => {
                         setClear(true);
                         setUserRated(true);
                         success('Se guardó correctamente');
-                        // setTimeout(() => window.location = `/movies/${movie}/comments`,200);
                     } else error('No se pudo actualizar la calificación');
-                } else error(responseSaving.data.success);
+                } else error('Algo salió mal al guardar tu calificación');
                     
-                    
-                } else error('Ya ha calificado este título, intente calificar otro');
             } else error('Ingrese una calificación válida'); 
         } else error('Inicie sesión para calificar este título o para hacer un comentario');
     }

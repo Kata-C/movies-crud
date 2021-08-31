@@ -81,7 +81,7 @@ router.get('/comments/user/:user', moviesController.getCommentsByUser);
 router.get('/comments/:movie', moviesController.getCommentsByMovie);
 router.get('/:movie/user/:user', moviesController.getRateByUser);
 router.post('/title/', moviesController.validateMovie);
- router.post('/', authAdmin, uploadImage ,moviesController.addMovies);
+router.post('/', authAdmin, uploadImage ,moviesController.addMovies);
 router.post('/rate/', authUser, moviesController.addRateAndComment); //This route is to rate a movie and to add a comment about it
 router.post('/comment/:movie', authUser, moviesController.addComment); //This route is to add just a comment, not to rating
 router.put('/rate/:movie', moviesController.rateAverage); // This route is to calculate the average and set the rate in a movie

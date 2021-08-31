@@ -1,16 +1,5 @@
 import api from "../api";
 
-// const getMovieById = (movieid) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             const response = await api.get(`/movies/${movieid}`);
-//             resolve(response);
-//         } catch (error) {
-//             reject(error);
-//         }
-//       }); 
-// }
-
 const login = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -26,8 +15,7 @@ const login = (data) => {
 const logout = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await api.post(`/user/logout/`,
-            { headers: { 'content-type': 'application/json' }});
+            const response = await api.get(`/user/logout/`);
             resolve(response);
         } catch (error) {
             reject(error);
@@ -47,9 +35,23 @@ const addUser = (data) => {
       }); 
 }
 
+const validateUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await api.post(`/user/username/`, data,
+            { headers: { 'content-type': 'application/json'}});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+      }); 
+}
+
+
 
 export const userService = {
     addUser,
     login,
-    logout
+    logout,
+    validateUser
 }

@@ -17,17 +17,22 @@ queries.addUser = (data, callback) => {
 
         pool.getConnection((err, connection) => {
             if (err)
-                throw err;
+                callback({
+                    success: false,
+                    results: err
+                });
             connection.query(query, (error, results) => {
                 connection.release();
                 if (error)
-                    throw error;
-
-                let data = {
+                    callback({
+                        success: false,
+                        results: error
+                    });
+ 
+                callback({
                     success: true,
-                    message: 'Se ha registrado con éxito'
-                }
-                callback(data);
+                    message: results.message
+                });
             });
         });
     })
@@ -60,34 +65,60 @@ queries.getUserById = (data, callback) => {
 
 }
 
+
+queries.validateUser = (body, callback) => {
+    const query = `SELECT * FROM usuarios
+    WHERE nombre = "${body.nombre}"
+    `;
+
+    pool.getConnection((err, connection) => {
+        if (err)
+            console.error(err);
+        else {
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                if(results.length > 0) callback(true);
+                else callback(false);
+    
+            });
+        }
+    });
+} 
+
 queries.login = (req, callbackResponse) => {
     getHashPassword(req, callbackResponse, (req, results, callbackResponse) => {
-        comparePassword(req, results[0].password, callbackResponse, (err, isPasswordMatch, callbackResponse, req) => {
-            if(err) callbackResponse({success: false})
-            if(isPasswordMatch) {
-                // if(results[0].tipo == 1) req.session.admin = true
-                // else req.session.admin = false
-				// req.session.usuario = req.body.nombre;
-                // console.log(`Desde el modelo: ${req.session.usuario}`)
-                // req.session.idusuario = results.idusuario;
-                let token = jwt.sign({
-                    admin: results[0].tipo,
-                    usuario: req.body.nombre,
-                    idusuario: results[0].idusuario
-                }, 'secret', {expiresIn: 60 * 60});
-				//response.redirect('/home');    
-                callbackResponse({
-                    admin: results[0].tipo,
-                    usuario: req.body.nombre,
-                    idusuario: results[0].idusuario,
-                    success: true,
-                    token
+        comparePassword(req,
+            results.length > 0 ? results[0].password : results[0], 
+            callbackResponse, 
+            (err, isPasswordMatch, callbackResponse, req) => {
+
+            if(err) {
+                callbackResponse({success: false, message: err})
+            } else {
+                if(isPasswordMatch) {
+                    let token = jwt.sign({
+                        admin: results[0].tipo,
+                        usuario: req.body.nombre,
+                        idusuario: results[0].idusuario
+                    }, 'secret', {expiresIn: 60 * 60});  
+                    callbackResponse({
+                        admin: results[0].tipo,
+                        usuario: req.body.nombre,
+                        idusuario: results[0].idusuario,
+                        success: true,
+                        token
+                    });
+                } else callbackResponse({
+                    admin: '',
+                    usuario: '',
+                    succes: false
                 });
-            } else callbackResponse({
-                admin: '',
-                usuario: '',
-                succes: false
-            });
+            }
+
+            
+
         });
     });
 };

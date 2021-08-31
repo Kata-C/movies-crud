@@ -11,14 +11,13 @@ const getMovies = (req, res) => {
             throw err;
         }
         let path;
-        const newResults = results.map(result => {
+        const newResults = results.results.map(result => {
             path=`${process.cwd()}\\src\\uploads\\images\\${result.portada}`
 
             return {...result, image: fs.readFileSync(path)}
             
         });
         res.send({
-            success: true,
             results: newResults
         });
     });
@@ -32,7 +31,7 @@ const getMovieById = (req, res) => {
             throw err;
         }
         let path;
-        const newResults = results.map(result => {
+        const newResults = results.results.map(result => {
             path=`${process.cwd()}\\src\\uploads\\images\\${result.portada}`
 
             return {...result, image: fs.readFileSync(path)}
@@ -53,7 +52,6 @@ const getRateByUser = (req, res) => {
             throw err;
         }
         res.send({
-            success: true,
             results
         });
     });
@@ -65,8 +63,7 @@ const addMovies = (req, res) => {
         if(err)
             throw err;
         res.send({
-            success: true,
-            results: results
+            results
         });
     });
 }
@@ -75,7 +72,6 @@ const updateMovie = (req, res) => {
     moviesModel.updateMovie(req.body, req.params, (results, err) => {
         if(err)
             throw err;
-        console.log(results);
         res.send({
             results
         });
@@ -84,14 +80,12 @@ const updateMovie = (req, res) => {
 
 const deleteMovie = (req, res) => {
     moviesModel.deleteMovie(req.params, (results, err) => {
-        if(err){
-            console.json(err);
+        if(err){;
             throw err;
         }
 
         res.send({
-            success: true,
-            results: results
+            results
         });
     });
 }
@@ -104,8 +98,7 @@ const addComment = (req, res) => {
         }
 
         res.send({
-            success: results.success,
-            results: results.message
+            results
         });
     });
 }
@@ -118,7 +111,6 @@ const getCommentsByUser = (req, res) => {
         }
 
         res.send({
-            success: true,
             results
         });
     });
@@ -132,44 +124,38 @@ const getCommentsByMovie = (req, res) => {
         }
 
         res.send({
-            success: true,
             results
         });
     });
 }
 
-// const rate = (req, res) => {
-//     moviesModel.rate(req.body, req.params, (results, err) => {
-//         if(err){
-//             console.json(err);
-//             throw err;
-//         }
-
-//         rateAverage(req, res);
-//     });
-// }
 
 const rateAverage = (req, res) => {
-    moviesModel.getRatingAverage((rate, err) => {
+    moviesModel.getRatingAverage(req.body.calificacion,(results, err) => {
         if(err){
             console.json(err);
             throw err;
         }
-
-        updateRate(req,res, rate);
+        if(results.success===true)
+            updateRate(req, res, results.rate);
+        else res.send({
+            results: {
+                success: false, 
+                results: 'a' + results.error
+            }
+        })
     });
 }
 
 
 const updateRate = (req, res, rate ) => {
-    moviesModel.updateRate(req.params, rate, (result, err) => {
+    moviesModel.updateRate(req.params, rate, (results, err) => {
         if(err){
             console.json(err);
             throw err;
         }
         res.send({
-            success: true,
-            result: result.message
+            results
         });
     });
 }
@@ -182,7 +168,6 @@ const validateMovie = (req, res) => {
             throw err;
         }
         res.send({
-            success: true,
             results
         });
     });
@@ -196,7 +181,6 @@ const addRateAndComment = (req, res) => {
             throw err;
         }
         res.send({
-            success: true,
             results
         });
     });

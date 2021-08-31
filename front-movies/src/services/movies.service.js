@@ -121,11 +121,23 @@ const addRateAndComment = (data) => {
  * @param {*} idmovie - Integer, it is an Id of a movie, its name could be idpelicula
  * @returns - Promise that consumes the endpoint to calculate the rate average and update this average in database
  */
-const calculateAverage = (idmovie) => {
+const calculateAverage = (idmovie, data) => {
 
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await api.put(`/movies/rate/${idmovie}`,
+            const response = await api.put(`/movies/rate/${idmovie}`, data,
+            { headers: { 'content-type': 'application/json'}});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+      }); 
+}
+
+const validateMovie = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await api.post(`/movies/title/`, data,
             { headers: { 'content-type': 'application/json'}});
             resolve(response);
         } catch (error) {
@@ -144,5 +156,6 @@ export const moviesService = {
     getCommentsByMovie,
     addRateAndComment,
     calculateAverage,
-    getRateByUser
+    getRateByUser,
+    validateMovie
 }

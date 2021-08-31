@@ -13,20 +13,10 @@ const DrawerEdit = ({visible, onClose, movie}) => {
         bytes.forEach((b) => binary += String.fromCharCode(b));
         return window.btoa(binary);
     };
-    let image = movie.image ? `data:image/jpeg;base64,${arrayBufferToBase64(movie.image.data)}` : '';
+    let image = movie.length > 0 ? `data:image/jpeg;base64,${arrayBufferToBase64(movie.image.data)}` : '';
     const [file, setFile] = useState([image]);
 
-    let portada = movie.portada;
-    let idpelicula = movie.idpelicula;
-    console.log(movie.idpelicula);
-    let titulo = movie.titulo;
-    let descripcion = movie.descripcion;
-    let genero1 = movie.genero1;
-    let genero2 = movie.genero2;
-    let genero3 = movie.genero3;
-
     useEffect(() => {
-        console.log(movie);
         form.setFieldsValue({
             titulo : movie.titulo,
             descripcion : movie.descripcion,
@@ -40,8 +30,8 @@ const DrawerEdit = ({visible, onClose, movie}) => {
     const success = () => {
         message.success('Se guardó correctamente');
     };
-    const error = () => {
-        message.error('No fue posible actualizar la información');
+    const error = (text) => {
+        message.error(text);
     };
 
     const uploadFile = ({fileList}) => {
@@ -56,18 +46,15 @@ const DrawerEdit = ({visible, onClose, movie}) => {
         formData.append('genero1', values.genero1);
         formData.append('genero2', values.genero2);
         formData.append('genero3', values.genero3);
-        formData.append('imagen', file[0].originFileObj ? file[0].originFileObj : '');
-        formData.append('portada', file[0].originFileObj ? file[0].originFileObj.name : portada);
+        formData.append('imagen', file.length > 0 ? file[0].originFileObj : '');
+        formData.append('portada', file[0].originFileObj ? file[0].originFileObj.name : '');
 
         const responseSaving = await moviesService.updateMovie(formData, movie.idpelicula);
-        //console.log(responseSaving.results.succes);
-        console.log(responseSaving.data.results.success);
-        console.log(responseSaving.data);
         if(responseSaving.data.results.success) {
-            console.log('Se guardó correctamente');
             success();
-            window.location = `/movies/${movie.idpelicula}/comments`;
-        } else error();
+            setTimeout(() => window.location = `/movies/${movie.idpelicula}/comments`, 200);
+        } else error('No fue posible actualizar la información');
+        
     };
 
     return (<>
@@ -110,7 +97,7 @@ const DrawerEdit = ({visible, onClose, movie}) => {
                 <Form.Item
                 name='genero2'
                 >
-                    <Input placeholder='Género (opcional)' label={genero2}/>
+                    <Input placeholder='Género (opcional)'/>
                 </Form.Item>
                 <Form.Item
                 name='genero3'

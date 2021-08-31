@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Form, Button, Drawer, Input, message, Upload} from 'antd';
 import { moviesService } from '../services/movies.service';
 
-const DrawerAdd = ({visible, onClose}) => {
+const DrawerAdd = ({visible, onClose, updateList}) => {
     const [form] = Form.useForm();
     const [file, setFile] = useState([]);
     const {TextArea} = Input;
@@ -10,20 +10,10 @@ const DrawerAdd = ({visible, onClose}) => {
     const success = () => {
         message.success('Se guardó correctamente');
     };
-    const error = () => {
-        message.error('Ocurrió un error. No se pudo guardar');
+    const error = (text) => {
+        message.error(text);
     };
 
-    const clear = () => {
-        form.setFieldsValue({
-            titulo: '',
-            descripcion: '',
-            genero1: '',
-            genero2: '',
-            genero3: '',
-            portada: ''
-        });
-    }
 
     const uploadFile = ({fileList}) => {
         setFile(fileList);
@@ -31,20 +21,23 @@ const DrawerAdd = ({visible, onClose}) => {
 
     const saveMovie = async (values) => {
 
-        let formData = new FormData();
-        formData.append('titulo', values.titulo);
-        formData.append('descripcion', values.descripcion);
-        formData.append('genero1', values.genero1);
-        formData.append('genero2', values.genero2);
-        formData.append('genero3', values.genero3);
-        formData.append('imagen', file[0].originFileObj);
-        formData.append('portada', file[0].originFileObj.name);
-        const responseSaving = await moviesService.addMovie(formData);
-        if(responseSaving.data.success) {
-            success();
-            onClose();
-            clear();
-        } else error();
+        const movieExists = await moviesService.validateMovie({titulo: values.titulo});
+        if(movieExists.data.results == false) {
+            let formData = new FormData();
+            formData.append('titulo', values.titulo);
+            formData.append('descripcion', values.descripcion);
+            formData.append('genero1', values.genero1 == null ? '': values.genero1);
+            formData.append('genero2', values.genero2 == null ? '': values.genero2);
+            formData.append('genero3', values.genero3 == null ? '': values.genero3);
+            formData.append('imagen', file[0].originFileObj);
+            formData.append('portada', file[0].originFileObj.name);
+            const responseSaving = await moviesService.addMovie(formData);
+            if(responseSaving.data.results.success) {
+                success();
+                window.location = '/';
+            } else error('Ocurrió un error, no se guardó correctamente');
+        } else error('Ya existe una película con este nombre');
+        
     };
 
     return (<>

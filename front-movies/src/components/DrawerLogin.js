@@ -10,31 +10,45 @@ const DrawerLogin = ({visible, onClose}) => {
 
     const [visibleChild, setVisibleChild] = useState(false);
     const [incorrectData, setIncorrectData] = useState(false);
+    const [form] = Form.useForm();
+    const [formChild] = Form.useForm();
     const auth = useContext(AuthContext);
 
-    useEffect(() => {
-        const activeSession = window.localStorage.getItem('auth');
-        if (activeSession) {
-            // auth.setUser(window.localStorage.getItem('auth').user);
-            // auth.setAdmin(window.localStorage.getItem('auth').admin);
-            console.log(window.localStorage.getItem('auth'))
-        }
-    }, [window.localStorage.getItem('auth')])
 
-    const success = () => {
-        message.success('Registro exitoso. Inicia sesión con los mismos datos');
+    const success = (text) => {
+        message.success(text);
     };
 
-    const error = () => {
-        message.error('Ocurrió un error. No se ha podido registrar con éxito');
+    const error = (text) => {
+        message.error(text);
       };
 
     const showChildDrawer = () => {
         setVisibleChild(true);
     }
 
+    const onCloseClearing = () => {
+        clear();
+        onClose();
+        setIncorrectData(false);
+        
+    }
+
     const onCloseChild = () => {
         setVisibleChild(false);
+    }
+    const clear = () => {
+        form.setFieldsValue({
+            nombre: '',
+            password: ''
+        });
+    }
+
+    const clearChild = () => {
+        formChild.setFieldsValue({
+            nombre: '',
+            password: ''
+        });
     }
 
     const signIn = async (values) => {
@@ -50,17 +64,13 @@ const DrawerLogin = ({visible, onClose}) => {
         // } else setIncorrectData(true);
         const response = await userService.login(data);
         if(response.data.success) {
-            setTimeout(() => console.log(auth.usuario), 300);
             auth.setUser(response.data.usuario);
             auth.setAdmin(response.data.admin);
             setIncorrectData(false);
-            //window.localStorage.setItem('auth', response.data);
-            console.log("admin login" + response.data.admin);
             window.localStorage.setItem('usuario', response.data.usuario);
             window.localStorage.setItem('admin', response.data.admin);
             window.localStorage.setItem('idusuario', response.data.idusuario);
             window.localStorage.setItem('token', response.data.token);
-            // console.log((window.localStorage.getItem('auth') ? window.localStorage.getItem('auth').usuario : 'no hay usuario'))window.localStorage.setItem('admin', response.data.admin);
             window.location = '/';
         } else setIncorrectData(true);
     }
@@ -73,11 +83,16 @@ const DrawerLogin = ({visible, onClose}) => {
         // const response = LogInOut.SignUp(data);
         // if(response) success();
         // else error();
-        const response = await userService.addUser(data);
-        console.log(response);
-        if(response.data.success) {
-            success();
-        } else error();
+        const userExists = await userService.validateUser({nombre: values.nombre});
+        if(userExists.data.results == false) {
+            const response = await userService.addUser(data);
+            if(response.data.success) {
+                success('Registro exitoso. Inicia sesión con los mismos datos');
+                onCloseChild();
+                clearChild();
+            } else error('Ocurrió un error. No se ha podido registrar correctamente');
+        } else error('Ya existe un usuario con este nombre');
+
         
     }
 
@@ -87,10 +102,10 @@ const DrawerLogin = ({visible, onClose}) => {
             width={420}
             placement="right"
             closable={true}
-            onClose={onClose}
+            onClose={onCloseClearing}
             visible={visible}
         >
-            <Form onFinish={signIn}>
+            <Form onFinish={signIn} form={form}>
                 <Form.Item
                 name="nombre"
                 rules={[{
@@ -138,7 +153,7 @@ const DrawerLogin = ({visible, onClose}) => {
                 visible={visibleChild}
             >
                     
-                <Form onFinish={signUp}>
+                <Form onFinish={signUp} form={formChild}>
                     <Form.Item
                     name="nombre"
                     rules={[{
