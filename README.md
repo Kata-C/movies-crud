@@ -19,3 +19,5 @@ username: 'Usuario2'
 password: '12345'
 
 Furthermore, there is a folder, 'portadas'. In it, there are some images from different movies. Use them to test the system.
+
+IMPORTANT: It is possible to delete almost all information from database, nothing will happen, except for the user admin. If you delete all the information, make sure to create a new account and modify the field 'tipo'; to make an administrator user, this field must be 1. A normal user has 2 as 'tipo'. 
