@@ -55,7 +55,7 @@ const DrawerLogin = ({visible, onClose}) => {
             auth.setAdmin(response.data.admin);
             setIncorrectData(false);
             //window.localStorage.setItem('auth', response.data);
-            console.log("id usuario front" + response.data.idusuario);
+            console.log("admin login" + response.data.admin);
             window.localStorage.setItem('usuario', response.data.usuario);
             window.localStorage.setItem('admin', response.data.admin);
             window.localStorage.setItem('idusuario', response.data.idusuario);

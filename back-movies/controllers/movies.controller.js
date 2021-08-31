@@ -1,5 +1,6 @@
 const moviesModel = require('../models/movies.model');
-const session = require('express-session');
+
+const fs = require("fs");
 
 
 
@@ -9,9 +10,16 @@ const getMovies = (req, res) => {
             console.log(err);
             throw err;
         }
+        let path;
+        const newResults = results.map(result => {
+            path=`${process.cwd()}\\src\\uploads\\images\\${result.portada}`
+
+            return {...result, image: fs.readFileSync(path)}
+            
+        });
         res.send({
             success: true,
-            results
+            results: newResults
         });
     });
 }
@@ -19,6 +27,27 @@ const getMovies = (req, res) => {
 
 const getMovieById = (req, res) => {
     moviesModel.getMovieById(req.params, (results, err) => {
+        if(err){
+            console.log(err);
+            throw err;
+        }
+        let path;
+        const newResults = results.map(result => {
+            path=`${process.cwd()}\\src\\uploads\\images\\${result.portada}`
+
+            return {...result, image: fs.readFileSync(path)}
+            
+        });
+        res.send({
+            success: true,
+            results: newResults
+        });
+    });
+}
+
+
+const getRateByUser = (req, res) => {
+    moviesModel.getRateByUser(req.params, (results, err) => {
         if(err){
             console.log(err);
             throw err;
@@ -32,14 +61,12 @@ const getMovieById = (req, res) => {
 
 
 const addMovies = (req, res) => {
-    console.log(req.body);
-    res.send({ success: true});
     moviesModel.addMovie(req.body, (results, err) => {
         if(err)
             throw err;
         res.send({
             success: true,
-            results: results.message
+            results: results
         });
     });
 }
@@ -48,9 +75,10 @@ const updateMovie = (req, res) => {
     moviesModel.updateMovie(req.body, req.params, (results, err) => {
         if(err)
             throw err;
+        console.log(results);
         res.send({
-            success: true,
-            results: results.message});
+            results
+        });
     });
 }
 
@@ -63,7 +91,7 @@ const deleteMovie = (req, res) => {
 
         res.send({
             success: true,
-            results: results.message
+            results: results
         });
     });
 }
@@ -187,5 +215,6 @@ module.exports = {
     getCommentsByUser,
     validateMovie,
     getCommentsByMovie,
-    addRateAndComment
+    addRateAndComment,
+    getRateByUser
 }

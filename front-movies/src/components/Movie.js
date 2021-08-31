@@ -8,8 +8,13 @@ const Movie = ({data}) => {
     if(data.genero2!==null || data.genero2!=='') genero2 = data.genero2
     if(data.genero3!==null || data.genero3!=='') genero3 = data.genero3
 
-    let directory = "/images/"+ data.portada;
-
+    const arrayBufferToBase64 = (buffer) => {
+        let binary = '';
+        let bytes = [].slice.call(new Uint8Array(buffer));
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+        return window.btoa(binary);
+    };
+    let directory = `data:image/jpeg;base64,${arrayBufferToBase64(data.image.data)}`
     return (
         <div>
         <Link

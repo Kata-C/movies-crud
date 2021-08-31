@@ -6,11 +6,14 @@
 }
 
 .information-section {
-    background-color: #272433;
     width: 320px;
     height: fit-content;
+    margin-top: 15px;
+}
+
+.movie-information {
+    background-color: #272433;
     padding: 10px;
-    margin-top: 5px;
 }
 
 .comments-section {

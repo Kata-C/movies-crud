@@ -24,11 +24,12 @@ const getMovieById = (movieid) => {
       }); 
 }
 
-const updateMovie = (data) => {
+const updateMovie = (data, idpelicula) => {
+    let authorization = window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null ;
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await api.put(`/movies/update/${data.idpelicula}`, data,
-            { headers: { 'content-type': 'application/json' }});
+            const response = await api.put(`/movies/update/${idpelicula}`, data,
+            { headers: { 'content-type': 'multipart/form-data', 'Authorization': authorization }});
             resolve(response);
         } catch (error) {
             reject(error);
@@ -37,10 +38,11 @@ const updateMovie = (data) => {
 }
 
 const addMovie = (data) => {
+    let authorization = window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null ;
     return new Promise(async (resolve, reject) => {
         try {
             const response = await api.post(`/movies/`, data,
-            { headers: { 'content-type': 'application/json' }});
+            { headers: { 'content-type': 'multipart/form-data', 'Authorization': authorization }});
             resolve(response);
         } catch (error) {
             reject(error);
@@ -61,9 +63,12 @@ const addMovie = (data) => {
 // }
 
 const deleteMovie = (movieid) => {
+    let authorization = window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null ;
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await api.delete(`/movies/delete/${movieid}`);
+            const response = await api.delete(`/movies/delete/${movieid}`, {
+                headers: { 'Authorization': authorization }
+            });
             resolve(response);
         } catch (error) {
             reject(error);
@@ -82,21 +87,28 @@ const getCommentsByMovie = (movieid) => {
       }); 
 }
 
+const getRateByUser = (idmovie, iduser) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await api.get(`/movies/${idmovie}/user/${iduser}`);
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+      }); 
+}
+
 /**
  * 
  * @param {*} data - Object that must include: idusuario, calificacion, idpelicula; it can include comentario, but it is not mandatory.
  * @returns - Promise that consumes the endpoint to save a rating and a comment about a certain movie
  */
 const addRateAndComment = (data) => {
-    let headers = {
-        'content-type': 'application/json',
-        'authorization': window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null
-    }
-    console.log(headers.authorization);
+    let authorization = window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null ;
     return new Promise(async (resolve, reject) => {
         try {
             const response = await api.post(`/movies/rate/`, data,
-            { headers});
+            { headers: { 'content-type': 'application/json', 'Authorization': authorization}});
             resolve(response);
         } catch (error) {
             reject(error);
@@ -131,5 +143,6 @@ export const moviesService = {
     deleteMovie,
     getCommentsByMovie,
     addRateAndComment,
-    calculateAverage
+    calculateAverage,
+    getRateByUser
 }

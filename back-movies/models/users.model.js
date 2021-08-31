@@ -70,15 +70,14 @@ queries.login = (req, callbackResponse) => {
 				// req.session.usuario = req.body.nombre;
                 // console.log(`Desde el modelo: ${req.session.usuario}`)
                 // req.session.idusuario = results.idusuario;
-                console.log(`id usuario desde bd: ${results[0].idusuario}`)
                 let token = jwt.sign({
-                    admin: results[0].tipo == 1 ? true : false,
+                    admin: results[0].tipo,
                     usuario: req.body.nombre,
                     idusuario: results[0].idusuario
                 }, 'secret', {expiresIn: 60 * 60});
 				//response.redirect('/home');    
                 callbackResponse({
-                    admin: results[0].tipo == 1 ? true : false,
+                    admin: results[0].tipo,
                     usuario: req.body.nombre,
                     idusuario: results[0].idusuario,
                     success: true,

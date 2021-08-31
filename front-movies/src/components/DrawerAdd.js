@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import {Form, Button, Drawer, Input, message} from 'antd';
+import {Form, Button, Drawer, Input, message, Upload} from 'antd';
 import { moviesService } from '../services/movies.service';
 
 const DrawerAdd = ({visible, onClose}) => {
-
-    const [file, setFile] = useState(null);
+    const [form] = Form.useForm();
+    const [file, setFile] = useState([]);
     const {TextArea} = Input;
 
     const success = () => {
@@ -15,34 +15,35 @@ const DrawerAdd = ({visible, onClose}) => {
     };
 
     const clear = () => {
-
+        form.setFieldsValue({
+            titulo: '',
+            descripcion: '',
+            genero1: '',
+            genero2: '',
+            genero3: '',
+            portada: ''
+        });
     }
 
-    const uploadFile = (file) => {
-        setFile(file);
-    }
+    const uploadFile = ({fileList}) => {
+        setFile(fileList);
+    } 
 
     const saveMovie = async (values) => {
-        // Pending: clear fields after saving
-        // Pending: validate if the user is admin
-        let data = {
-            titulo: values.titulo,
-            descripcion: values.descripcion,
-            genero1: values.genero1,
-            genero2: values.genero2 != null ? values.genero2 : '',
-            genero3: values.genero3 != null ? values.genero3 : '',
-            portada: values.portada.split('\\')[2]
-        };
-        uploadFile(values.portada);
-        console.log(values.portada.split('\\')[2]);
 
-        const responseSaving = await moviesService.addMovie(data);
+        let formData = new FormData();
+        formData.append('titulo', values.titulo);
+        formData.append('descripcion', values.descripcion);
+        formData.append('genero1', values.genero1);
+        formData.append('genero2', values.genero2);
+        formData.append('genero3', values.genero3);
+        formData.append('imagen', file[0].originFileObj);
+        formData.append('portada', file[0].originFileObj.name);
+        const responseSaving = await moviesService.addMovie(formData);
         if(responseSaving.data.success) {
-            console.log('Se guardó correctamente');
-            
             success();
             onClose();
-                // Change here, replace for a message
+            clear();
         } else error();
     };
 
@@ -56,7 +57,7 @@ const DrawerAdd = ({visible, onClose}) => {
             visible={visible}
         >
             <p style={{color: 'black'}}>Añadir pelicula</p>
-            <Form onFinish={saveMovie} encType='multipart/form-data'>
+            <Form onFinish={saveMovie} encType='multipart/form-data' form={form}>
                 <Form.Item
                 name='titulo'
                 rules={[{
@@ -100,7 +101,16 @@ const DrawerAdd = ({visible, onClose}) => {
                 }]}
                 name='portada'
                 >
-                    <Input type="file" accept='.png,.jpg,.jpeg,'/>
+                    <Upload
+                        listType="picture"
+                        fileList={file}
+                        onChange={uploadFile}
+                        maxCount={1}
+                        beforeUpload={() => false} // return false so that antd doesn't upload the picture right away
+                        >
+                         <Button>Cargar imagen</Button>
+                    </Upload>
+                    
                 </Form.Item>
                 <Form.Item>
                     <Button type='primary' htmlType='submit'>Guardar</Button>

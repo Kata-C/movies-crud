@@ -40,29 +40,6 @@ queries.getMovies = (callback) => {
             });
         }
     });
-
-    // const query =` 
-    // SELECT
-    // id,
-    // titulo,
-    // descripcion,
-    // genero1,
-    // genero2,
-    // genero3,
-    // promedio,
-    // portada
-    // FROM peliculas;
-    // `
-
-    // pool.getConnection(async (err, connection) => {
-    //     if (err) 
-    //         console.error(err);
-    //     else {
-    //         const results = await connection.query(query);
-    //         console.log(results);
-    //         //callback(JSON.stringify(results));
-    //     }
-    // });
 };
 
 queries.getMovieById = (params, callback) => {
@@ -139,29 +116,70 @@ queries.validateMovie = (body, callback) => {
 
 queries.updateMovie = (body, params, callback) => {
 
-    const query = `UPDATE peliculas 
-    SET titulo = "${body.titulo}", 
-    descripcion = "${body.descripcion}",
-    genero1 = "${body.genero1}",
-    genero2 = "${body.genero2}",
-    genero3 = "${body.genero3}",
-    portada = "${body.portada}"
-    WHERE id = ${params.movie}
-    `;
 
-    pool.getConnection((err, connection) => {
-        if (err)
-            console.error(err);
-        else {
-            connection.query(query, (error, results) => {
-                connection.release();
-                if (error)
-                    console.error(error);
+    if(body.portada == '') {
+        const query = `UPDATE peliculas 
+        SET titulo = "${body.titulo}", 
+        descripcion = "${body.descripcion}",
+        genero1 = "${body.genero1}",
+        genero2 = "${body.genero2}",
+        genero3 = "${body.genero3}",
+        WHERE id = ${params.movie}
+        `;
+        pool.getConnection((err, connection) => {
+            if (err)
+                console.error(err);
+            else {
+                connection.query(query, (error, results) => {
+                    connection.release();
+                    if (error)
+                        callback({
+                            success:false,
+                            message: err
+                        })
+            
+                    callback({
+                        success:true,
+                        results: results.message
+                    });
+                });
+            }
+        });
+    } else {
         
-                callback(results);
-            });
-        }
-    });
+        query = `UPDATE peliculas 
+        SET titulo = "${body.titulo}", 
+        descripcion = "${body.descripcion}",
+        genero1 = "${body.genero1}",
+        genero2 = "${body.genero2}",
+        genero3 = "${body.genero3}",
+        portada = "${body.portada}"
+        WHERE id = ${params.movie}
+        `;
+        pool.getConnection((err, connection) => {
+            if (err)
+                console.error(err);
+            else {
+                connection.query(query, (error, results) => {
+                    connection.release();
+                    if (error)
+                        callback({
+                            success:false,
+                            message: err
+                        })
+            
+                    callback({
+                        success:true,
+                        results: results.message
+                    });
+                });
+            }
+        });
+    }
+
+    
+
+    
 };
 
 queries.deleteMovie = (params, callback) => {
@@ -221,7 +239,7 @@ queries.addRateAndComment = (body, callback) => {
     idusuario = ${body.idusuario},
     idpelicula = ${body.idpelicula},
     comentario = "${body.comentario}",
-    calificacion = "${body.calificacion}"
+    calificacion = ${body.calificacion}
     `;
 
     pool.getConnection((err, connection) => {
@@ -259,7 +277,6 @@ queries.getCommentByUser = (params, callback) => {
                 connection.release();
                 if (error)
                     console.error(error);
-                //console.log(result[0].idpelicula);
                 callback(result);
             });
         }
@@ -286,10 +303,29 @@ queries.getCommentsByMovie = (params, callback) => {
                 connection.release();
                 if (error)
                     console.error(error);
-                //console.log(result[0].idpelicula);
                 callback(results);
             });
         }
+    });
+}
+
+queries.getRateByUser = (params, callback) => {
+    const query = `SELECT 
+    * FROM calificaciones
+    WHERE idpelicula = ${params.movie} AND idusuario = ${params.user}`;
+
+    pool.getConnection((err, connection) => {
+        if (err)
+            console.log(err);
+        else { 
+            connection.query(query, (error, results) => {
+                connection.release();
+                if (error)
+                    console.error(error);
+                callback(results);
+            });
+        }
+        
     });
 }
 
@@ -306,7 +342,6 @@ queries.updateRate = (params, rate, callback) => {
                 connection.release();
                 if (error)
                     console.error(error);
-                //console.log(result[0].idpelicula);
                 callback(result);
             });
         }
@@ -369,7 +404,6 @@ const getLastRate = (callbackResponse, callback) => {
                 connection.release();
                 if (error)
                     console.error(error);
-                //console.log(result[0].idpelicula);
                 callback(callbackResponse, result[0].idpelicula);
             });
         }

@@ -6,7 +6,7 @@ import {Button, Popover} from 'antd';
 import { userService } from '../services/user.service';
 
 
-const Header = ({isLogged, setVisible, setVisibleAdding}) => {
+const Header = ({setVisible, setVisibleAdding}) => {
 
     const auth = useContext(AuthContext);
     const showDrawer = () => {
@@ -40,6 +40,7 @@ const Header = ({isLogged, setVisible, setVisibleAdding}) => {
     
     let menu = () => {
         if(window.localStorage.getItem('usuario') == null || window.localStorage.getItem('admin') == null){
+            console.log('localstorage' + window.localStorage.getItem('admin'))
             return (
                 <div className="menu">
                     <div className="text"><Link className="link" to="/">Películas</Link></div>
@@ -48,7 +49,8 @@ const Header = ({isLogged, setVisible, setVisibleAdding}) => {
                     </Button>
                 </div>);
         } else {
-            if(window.localStorage.getItem('admin') === true) {
+           
+            if(window.localStorage.getItem('admin') == 1 ) {
                 return (
                 <div className="menu">
                     <div className="text" onClick={showDrawerAdd}>Agregar peliculas</div>
@@ -58,7 +60,6 @@ const Header = ({isLogged, setVisible, setVisibleAdding}) => {
                     </Popover></div>  
                 </div>);
             } else if(window.localStorage.getItem('usuario') != '') {
-                console.log('entró al if de usuario')
                 return (
                 <div className="menu">
                     <div className="text"><Link className="link" to="/">Películas</Link></div>

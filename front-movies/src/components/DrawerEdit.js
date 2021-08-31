@@ -1,70 +1,84 @@
-import React, { useEffect } from 'react';
-import {Form, Button, Drawer, Input, message} from 'antd';
+import React, { useEffect, useState } from 'react';
+import {Form, Button, Drawer, Input, message, Upload} from 'antd';
 import { moviesService } from '../services/movies.service';
 
 const DrawerEdit = ({visible, onClose, movie}) => {
-
+    
     const [form] = Form.useForm();
-
     const {TextArea} = Input;
-
-    const success = () => {
-        message.success('Se guardó correctamente');
+   
+    const arrayBufferToBase64 = (buffer) => {
+        let binary = '';
+        let bytes = [].slice.call(new Uint8Array(buffer));
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+        return window.btoa(binary);
     };
-    const error = () => {
-        message.error('This is an error message');
-    };
-
+    let image = movie.image ? `data:image/jpeg;base64,${arrayBufferToBase64(movie.image.data)}` : '';
+    const [file, setFile] = useState([image]);
 
     let portada = movie.portada;
     let idpelicula = movie.idpelicula;
+    console.log(movie.idpelicula);
     let titulo = movie.titulo;
     let descripcion = movie.descripcion;
-    let promedio = movie.promedio;
     let genero1 = movie.genero1;
     let genero2 = movie.genero2;
     let genero3 = movie.genero3;
 
     useEffect(() => {
+        console.log(movie);
         form.setFieldsValue({
-            titulo,
-            descripcion,
-            genero1,
-            genero2,
-            genero3
+            titulo : movie.titulo,
+            descripcion : movie.descripcion,
+            genero1 : movie.genero1,
+            genero2 : movie.genero2,
+            genero3 : movie.genero3,
+            portada: file
         });
-    }, []);
+    }, [movie]);
+
+    const success = () => {
+        message.success('Se guardó correctamente');
+    };
+    const error = () => {
+        message.error('No fue posible actualizar la información');
+    };
+
+    const uploadFile = ({fileList}) => {
+        setFile(fileList);
+    } 
 
     const updateMovie = async (values) => {
-        // Pending: clear fields after saving
-        // Pending: validate if the user is admin
-        let data = {
-            idpelicula,
-            titulo: values.titulo,
-            descripcion: values.descripcion,
-            genero1: values.genero1,
-            genero2: values.genero2 == '' ? genero2 : values.genero2,
-            genero3: values.genero3 == '' ? genero3 : values.genero3
-        };
+        let formData = new FormData();
+        formData.append('titulo', values.titulo);
+        formData.append('idpelicula', movie.idpelicula);
+        formData.append('descripcion', values.descripcion);
+        formData.append('genero1', values.genero1);
+        formData.append('genero2', values.genero2);
+        formData.append('genero3', values.genero3);
+        formData.append('imagen', file[0].originFileObj ? file[0].originFileObj : '');
+        formData.append('portada', file[0].originFileObj ? file[0].originFileObj.name : portada);
 
-        const responseSaving = await moviesService.updateMovie(data);
-        if(responseSaving.data.success) {
+        const responseSaving = await moviesService.updateMovie(formData, movie.idpelicula);
+        //console.log(responseSaving.results.succes);
+        console.log(responseSaving.data.results.success);
+        console.log(responseSaving.data);
+        if(responseSaving.data.results.success) {
             console.log('Se guardó correctamente');
             success();
-            onClose();
+            window.location = `/movies/${movie.idpelicula}/comments`;
         } else error();
     };
 
     return (<>
         <Drawer
-            title="Nueva película"
+            title="Actualizar"
             width={440}
             placement="right"
             closable={true}
             onClose={onClose}
             visible={visible}
         >
-            <p style={{color: 'black'}}>Añadir pelicula</p>
             <Form onFinish={updateMovie} form={form}> 
                 <Form.Item
                 name='titulo'
@@ -102,6 +116,24 @@ const DrawerEdit = ({visible, onClose, movie}) => {
                 name='genero3'
                 >
                     <Input placeholder='Género (opcional)'/>
+                </Form.Item>
+                <Form.Item
+                rules={[{
+                    required: true,
+                    message: 'Seleccione una imagen'
+                }]}
+                name='portada'
+                >
+                    <Upload
+                        listType="picture"
+                        fileList={file}
+                        onChange={uploadFile}
+                        maxCount={1}
+                        beforeUpload={() => false} // return false so that antd doesn't upload the picture right away
+                        >
+                         <Button>Cargar imagen</Button>
+                    </Upload>
+                    
                 </Form.Item>
                 <Form.Item>
                     <Button type='primary' htmlType='submit'>Guardar</Button>
