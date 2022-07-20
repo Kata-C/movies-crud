@@ -137,8 +137,6 @@ queries.validateMovie = (body, callback) => {
 } 
 
 queries.updateMovie = (body, params, callback) => {
-
-
     if(body.portada == '') {
         const query = `UPDATE peliculas 
         SET titulo = "${body.titulo}", 
@@ -169,7 +167,6 @@ queries.updateMovie = (body, params, callback) => {
             }
         });
     } else {
-        
         query = `UPDATE peliculas 
         SET titulo = "${body.titulo}", 
         descripcion = "${body.descripcion}",
@@ -204,10 +201,8 @@ queries.updateMovie = (body, params, callback) => {
 };
 
 queries.deleteMovie = (params, callback) => {
-
     const query = `DELETE FROM peliculas 
-    WHERE id = ${params.movie}
-    `;
+    WHERE id = ${params.movie}`;
 
     pool.getConnection((err, connection) => {
         if (err)
@@ -226,7 +221,6 @@ queries.deleteMovie = (params, callback) => {
                     });
             });
         }
-
     });
 
 };
@@ -261,7 +255,6 @@ queries.addComment = (body, params, callback) => {
 }
 
 queries.addRateAndComment = (body, callback) => {
-    console.log('model add rate and comm newrate' + body.newrate);
     if(body.newrate === true) {
         const query = `INSERT INTO calificaciones SET 
         idusuario = ${body.idusuario},
@@ -378,6 +371,7 @@ queries.getCommentsByMovie = (params, callback) => {
             });
         }
     });
+    
 }
 
 queries.getRateByUser = (params, callback) => {
@@ -469,8 +463,6 @@ const getLastRate = (callbackResponse, callback) => {
 
 
 const getRates = (callbackResponse, idmovie, firstrate) => {
-
-    console.log('idmovie en get rates  ' + idmovie)
     if(idmovie === 0) {
         callbackResponse({
             success: true,
