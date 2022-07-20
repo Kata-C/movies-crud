@@ -50,18 +50,6 @@ const addMovie = (data) => {
       }); 
 }
 
-// const addMovie = (data) => {
-//     console.log(data.portada);
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             const response = await api.post(`/upload`, data.portada);
-//             resolve(response);
-//         } catch (error) {
-//             reject(error);
-//         }
-//       }); 
-// }
-
 const deleteMovie = (movieid) => {
     let authorization = window.localStorage.getItem('token') ? window.localStorage.getItem('token') : null ;
     return new Promise(async (resolve, reject) => {

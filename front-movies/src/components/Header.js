@@ -36,7 +36,6 @@ const Header = ({setVisible, setVisibleAdding}) => {
     
     let menu = () => {
         if(window.localStorage.getItem('usuario') == null || window.localStorage.getItem('admin') == null){
-            console.log('localstorage' + window.localStorage.getItem('admin'))
             return (
                 <div className="menu">
                     <Button type='link' className="text"><Link className="link" to="/">Películas</Link></Button>

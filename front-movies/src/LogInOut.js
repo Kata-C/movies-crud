@@ -11,10 +11,7 @@ const SignIn = async (data) => {
     if(response.data.success) {
         auth.setUser(response.data.usuario);
         auth.setAdmin(response.data.admin);
-        console.log(`auth user ${auth.user}`)
         window.localStorage.setItem('auth', auth);
-        console.log(`windows local storage ${window.localStorage.getItem('auth')}`)
-        //console.log(window.sessionStorage.getItem('auth').usuario);
         //window.location = '/';
     }
     return response.data.success

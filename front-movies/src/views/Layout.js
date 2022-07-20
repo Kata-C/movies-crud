@@ -6,8 +6,6 @@ import DrawerLogin from '../components/DrawerLogin'
 import DrawerAdd from '../components/DrawerAdd';
 import MovieTemplate from './MovieTemplate';
 
-
-
 const Layout = () => {
 
     const [visible, setVisible] = useState(false);
